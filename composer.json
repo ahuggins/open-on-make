@@ -1,0 +1,24 @@
+{
+    "name": "ahuggins/open-on-make",
+    "description": "Automatically open files in editor when Artisan make:? is executed",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Andrew Huggins",
+            "email": "andrewhuggins@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "OpenOnMake": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
++            "providers": [
++                "OpenOnMake\\Providers\\OpenOnMakeServiceProvider"
++            ]
+         }
+    }
+}
