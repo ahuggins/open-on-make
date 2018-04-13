@@ -3,6 +3,7 @@
 namespace OpenOnMake\Providers;
 
 use Illuminate\Support\Facades\Event;
+use OpenOnMake\Listeners\OpenOnMake;
 use Illuminate\Support\ServiceProvider;
 
 class OpenOnMakeServiceProvider extends ServiceProvider
@@ -15,7 +16,7 @@ class OpenOnMakeServiceProvider extends ServiceProvider
 
         Event::listen('Illuminate\Console\Events\CommandFinished', function($event)
         {
-            new OpenOnMake\Listeners\OpenOnMake($event);
+            new OpenOnMake($event);
         });
     }
 }
