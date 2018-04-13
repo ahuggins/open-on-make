@@ -13,6 +13,17 @@ OPEN_ON_MAKE_EDITOR=nameOfCliCommandForEditor
 OPEN_ON_MAKE_FLAGS='-a' // Flags you need passed to the above Command
 ```
 
+> Most people will probably only need to add `OPEN_ON_MAKE_EDITOR` to their .env file.
+
+## Example Editor values
+
+Sublime - `OPEN_ON_MAKE_EDITOR=subl`
+Sublime - `OPEN_ON_MAKE_EDITOR=sublime`
+
+PHPStorm - `OPEN_ON_MAKE_EDITOR=pstorm`
+
+Atom - `OPEN_ON_MAKE_EDITOR=atom` Provided you have shell commands installed: https://user-images.githubusercontent.com/1791228/38758555-814eb602-3f3f-11e8-8071-3c9690bb0374.png
+
 ## License
 
 MIT
