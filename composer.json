@@ -16,9 +16,9 @@
     },
     "extra": {
         "laravel": {
-+            "providers": [
-+                "OpenOnMake\\Providers\\OpenOnMakeServiceProvider"
-+            ]
-         }
+        "providers": [
+                "OpenOnMake\\Providers\\OpenOnMakeServiceProvider"
+            ]
+        }
     }
 }
