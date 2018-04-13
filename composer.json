@@ -1,6 +1,6 @@
 {
     "name": "ahuggins/open-on-make",
-    "description": "Automatically open files in editor when Artisan make:? is executed",
+    "description": "Automatically open files in editor when Artisan make:* is executed",
     "license": "MIT",
     "authors": [
         {
