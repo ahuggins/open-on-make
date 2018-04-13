@@ -5,7 +5,7 @@ namespace OpenOnMake\Providers;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
-class OpenOnMake extends ServiceProvider
+class OpenOnMakeServiceProvider extends ServiceProvider
 {
     public function boot()
     {
