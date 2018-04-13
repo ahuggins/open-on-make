@@ -9,8 +9,6 @@ class OpenOnMakeServiceProvider extends ServiceProvider
 {
     public function boot()
     {
-        parent::boot();
-
         $this->publishes([
             __DIR__.'/../config/open-on-make.php' => config_path('open-on-make.php')
         ], 'open-on-make');
