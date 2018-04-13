@@ -13,6 +13,8 @@ OPEN_ON_MAKE_EDITOR=nameOfCliCommandForEditor
 OPEN_ON_MAKE_FLAGS='-a' // Flags you need passed to the above Command
 ```
 
+Finally, run `php artisan vendor:publish --tag=open-on-make`.
+
 ## License
 
 MIT

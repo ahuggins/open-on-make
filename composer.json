@@ -20,5 +20,10 @@
                     "OpenOnMake\\Providers\\OpenOnMakeServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "post-root-package-install": [
+            "php artisan vendor:publish --tag=open-on-make"
+        ]
     }
 }
