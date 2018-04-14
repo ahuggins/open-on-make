@@ -30,64 +30,72 @@ class OpenOnMake
 
     public function handle($event)
     {
-        // dd($event);
-        if (
-            config('app.env') !== 'production' 
-            && str_contains($event->command, 'make:')
-        ) {
-            $classType = explode('make:', $event->command)[1];
-            // make:auth is not really something that works here
-            // it's not generating a single class
-            // So just return early and move on
-            if ($classType == 'auth') {
-                return;
-            }
+        if ($this->envNotProduction() && $this->executedCommandWasMakeCommand($event)) {
+            $classType = str_replace('make:', '', $event->command);
 
-            if ($classType == 'test') {
-                if ($event->input->getOption('unit')) {
-                    $path = $this->paths['unit'] . $event->input->getArgument('name') . '.php';
-                } else {
-                    $path = $this->paths['feature'] . $event->input->getArgument('name') . '.php';
-                }
-            } elseif ($classType == 'migration') {
+            // special cases to handle
+            if ($classType === 'auth') {
+                return;
+            } elseif ($classType === 'test') {
+                $path = base_path($this->getTestPath($event) . $this->filename($event));
+            } elseif ($classType === 'migration') {
                 $path = $this->getLatestMigrationFile();
             } else {
-                $path = base_path(
-                    $this->paths[$classType] . $event->input->getArgument('name') . '.php'
-                );
+                $path = base_path($this->paths[$classType] . $this->filename($event));
             }
 
-            // open the file
-            // This may need to be customized to your system...PHPStorm or 
-            // might be subl instead of sublime depending on your system.
-            // 
-            
             exec(
                 config('open-on-make.editor') . ' ' . 
                 config('open-on-make.flags') . ' ' . 
                 escapeshellcmd($path)
             );
-            // uncomment for PHPStorm
-            // exec('pstorm ' . escapeshellcmd($path));
-            // exec('atom ' . escapeshellcmd($path));
         }
+    }
+
+    public function executedCommandWasMakeCommand($event)
+    {
+        return str_contains($event->command, 'make:');
+    }
+
+    public function envNotProduction()
+    {
+        return config('app.env') !== 'production';
+    }
+
+    public function filename($event)
+    {
+        return $event->input->getArgument('name') . '.php';
+    }
+
+    public function getTestPath($event)
+    {
+        $isUnit = $event->input->getOption('unit');
+        return $isUnit ? $this->paths['unit'] : $this->paths['feature'];
     }
 
     protected function getLatestMigrationFile()
     {
-        app()->config["filesystems.disks.easyOpen"] = [
-            'driver' => 'local',
-            'root' => base_path(),
-        ];
+        $this->createDiskForAppRoot();
 
         $newestMigration = collect(
             \Storage::disk('easyOpen')->files('database/migrations')
         )->pop();
 
-        unset(app()->config['filesystems.disks.easyOpen']);
+        $this->unsetDiskForAppRoot();
 
-        return base_path(
-            $newestMigration
-        );
+        return base_path($newestMigration);
+    }
+
+    public function unsetDiskForAppRoot()
+    {
+        unset(app()->config['filesystems.disks.easyOpen']);
+    }
+
+    public function createDiskForAppRoot()
+    {
+        app()->config["filesystems.disks.easyOpen"] = [
+            'driver' => 'local',
+            'root' => base_path(),
+        ];
     }
 }
