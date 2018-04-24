@@ -24,6 +24,8 @@ PHPStorm - `OPEN_ON_MAKE_EDITOR=pstorm`
 
 Atom - `OPEN_ON_MAKE_EDITOR=atom` Provided you have shell commands installed: https://user-images.githubusercontent.com/1791228/38758555-814eb602-3f3f-11e8-8071-3c9690bb0374.png
 
+VS Code = `OPEN_ON_MAKE_EDITOR=code` Provided you have the `code` shell command installed: https://code.visualstudio.com/docs/setup/mac
+
 ## License
 
 MIT
