@@ -15,6 +15,10 @@ OPEN_ON_MAKE_FLAGS='-a' // Flags you need passed to the above Command
 
 > Most people will probably only need to add `OPEN_ON_MAKE_EDITOR` to their .env file.
 
+- publish the package config with 
+
+  `php artisan vendor:publish --tag=open-on-make`
+
 ## Example Editor values
 
 Sublime - `OPEN_ON_MAKE_EDITOR=subl`
