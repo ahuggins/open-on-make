@@ -8,7 +8,10 @@
             "email": "andrewhuggins@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "php" : "~7.0",
+        "illuminate/support": "~5.5.0|~5.6.0",
+    },
     "autoload": {
         "psr-4": {
             "OpenOnMake\\": "src"
@@ -17,7 +20,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                    "OpenOnMake\\Providers\\OpenOnMakeServiceProvider"
+                "OpenOnMake\\Providers\\OpenOnMakeServiceProvider"
             ]
         }
     },
