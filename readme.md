@@ -1,6 +1,6 @@
 # Open On Make
 
-A package that makes it easy to have the `artisan make:` commands open the newly created file in your editor of choice. Developed for Laravel 5.6. Some of the paths may be incorrect for other versions.
+A package that makes it easy to have the `artisan make:` commands open the newly created file in your editor of choice.
 
 ## Installation
 
@@ -18,7 +18,6 @@ OPEN_ON_MAKE_FLAGS='-a' // Flags you need passed to the above Command
 ## Example Editor values
 
 Sublime - `OPEN_ON_MAKE_EDITOR=subl`
-Sublime - `OPEN_ON_MAKE_EDITOR=sublime`
 
 PHPStorm - `OPEN_ON_MAKE_EDITOR=pstorm`
 
