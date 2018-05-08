@@ -4,7 +4,7 @@ A package that makes it easy to have the `artisan make:` commands open the newly
 
 ## Installation
 
-`composer require ahuggins/open-on-make`
+`composer require-dev ahuggins/open-on-make`
 
 This package defaults to sublime using the `subl` command, if you have aliased it to something else OR wish to use a different editor, you will need to add the following to your .env file.
 
