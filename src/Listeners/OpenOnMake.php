@@ -25,7 +25,8 @@ class OpenOnMake
         'rule' => 'app/Rules/',
         'seeder' => 'database/seeds/',
         'feature' => 'tests/Feature/',
-        'unit' => 'tests/Unit/'
+        'unit' => 'tests/Unit/',
+        'widget' => 'app/Widgets/'
     ];
 
     public function handle($event)
@@ -45,8 +46,8 @@ class OpenOnMake
             }
 
             exec(
-                config('open-on-make.editor') . ' ' . 
-                config('open-on-make.flags') . ' ' . 
+                config('open-on-make.editor') . ' ' .
+                config('open-on-make.flags') . ' ' .
                 escapeshellcmd($path)
             );
         }
