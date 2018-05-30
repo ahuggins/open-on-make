@@ -8,6 +8,12 @@ A package that makes it easy to have the `artisan make:` commands open the newly
 
 This package defaults to sublime using the `subl` command, if you have aliased it to something else OR wish to use a different editor, you will need to add the following to your .env file.
 
+#### Global (sort of)
+> Note: You can now set a php.ini value...`open_on_make_editor="code"` this means that you will not have to set an ENV value in every project. Essentially means you can set your editor one time, in your local dev environment and then simply add this package to your project, and be good.
+>
+> It still means you can per project set an env, if for some reason you use certain editors for certain projects.
+
+#### Per Project
 ```
 OPEN_ON_MAKE_EDITOR=nameOfCliCommandForEditor
 OPEN_ON_MAKE_FLAGS='-a' // Flags you need passed to the above Command
