@@ -19,6 +19,12 @@ OPEN_ON_MAKE_FLAGS='-a' // Flags you need passed to the above Command
 
   `php artisan vendor:publish --tag=open-on-make`
 
+You can explicitly disable this package by setting the `OPEN_ON_MAKE_ENABLED` environment variable:
+
+```
+OPEN_ON_MAKE_ENABLED=false
+```
+
 ## Example Editor values
 
 Sublime - `OPEN_ON_MAKE_EDITOR=subl`
