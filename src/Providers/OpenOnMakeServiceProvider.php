@@ -18,9 +18,11 @@ class OpenOnMakeServiceProvider extends ServiceProvider
             __DIR__.'/../config/open-on-make.php' => config_path('open-on-make.php')
         ], 'open-on-make');
 
-        Event::listen(
-            'Illuminate\Console\Events\CommandFinished',
-            'OpenOnMake\Listeners\OpenOnMake'
-        );
+        if (config('open-on-make.enabled')) {
+            Event::listen(
+                'Illuminate\Console\Events\CommandFinished',
+                'OpenOnMake\Listeners\OpenOnMake'
+            );
+        }
     }
 }
