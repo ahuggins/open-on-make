@@ -37,7 +37,7 @@ VS Code = `OPEN_ON_MAKE_EDITOR=code` Provided you have the `code` shell command 
 
 ## License
 
-MIT
+Licensed under the [MIT](license) license
 
 
 
