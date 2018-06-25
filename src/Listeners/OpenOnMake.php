@@ -18,7 +18,7 @@ class OpenOnMake
         'migration' => '',
         'model' => 'app/',
         'notification' => 'app/Notifications/',
-        'observer' => 'app/Observers',
+        'observer' => 'app/Observers/',
         'policy' => 'app/Policies/',
         'provider' => 'app/Providers/',
         'request' => 'app/Http/Requests/',
