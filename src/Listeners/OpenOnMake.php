@@ -26,7 +26,8 @@ class OpenOnMake
         'seeder' => 'database/seeds/',
         'feature' => 'tests/Feature/',
         'unit' => 'tests/Unit/',
-        'widget' => 'app/Widgets/'
+        'widget' => 'app/Widgets/',
+        'observer' => 'app/Observers/'
     ];
 
     public function handle($event)
