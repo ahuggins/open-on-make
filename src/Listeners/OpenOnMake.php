@@ -46,9 +46,14 @@ class OpenOnMake
             } elseif ($classType === 'migration') {
                 $path = $this->getLatestMigrationFile();
             } else {
-                $path = base_path($this->paths[$classType] . $this->filename($event));
+                if(!isset($this->paths[$classType])) {
+                    $path = $this->findFile($event);
+                }
+                else {
+                    $path = base_path($this->paths[$classType] . $this->filename($event));
+                }
             }
-
+            
             exec(
                 config('open-on-make.editor') . ' ' .
                 config('open-on-make.flags') . ' ' .
@@ -102,5 +107,18 @@ class OpenOnMake
             'driver' => 'local',
             'root' => base_path(),
         ];
+    }
+    
+    public function findFile($event)
+    {
+        $finder = new \Symfony\Component\Finder\Finder();
+        $finder->files()->name($this->filename($event))->in(base_path());
+    
+        foreach($finder as $file) {
+            $path = $file->getRealPath();
+            break;
+        }
+        
+        return $path;
     }
 }
