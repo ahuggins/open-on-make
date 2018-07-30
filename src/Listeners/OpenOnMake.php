@@ -27,11 +27,14 @@ class OpenOnMake
         'seeder' => 'database/seeds/',
         'feature' => 'tests/Feature/',
         'unit' => 'tests/Unit/',
-        'widget' => 'app/Widgets/'
+        'widget' => 'app/Widgets/',
+        'observer' => 'app/Observers/'
     ];
 
     public function handle($event)
     {
+        $this->paths = array_merge($this->paths, config('open-on-make.paths'));
+
         if ($this->envNotProduction() && $this->executedCommandWasMakeCommand($event)) {
             $classType = str_replace('make:', '', $event->command);
 
@@ -43,13 +46,19 @@ class OpenOnMake
             } elseif ($classType === 'migration') {
                 $path = $this->getLatestMigrationFile();
             } else {
-                $path = base_path($this->paths[$classType] . $this->filename($event));
+                if(!isset($this->paths[$classType])) {
+                    $path = $this->findFile($event);
+                }
+                else {
+                    $path = base_path($this->paths[$classType] . $this->filename($event));
+                }
             }
-
+            
             exec(
                 config('open-on-make.editor') . ' ' .
                 config('open-on-make.flags') . ' ' .
-                escapeshellcmd('"'.$path.'"')
+                escapeshellarg($path)
+
             );
         }
     }
@@ -99,5 +108,18 @@ class OpenOnMake
             'driver' => 'local',
             'root' => base_path(),
         ];
+    }
+    
+    public function findFile($event)
+    {
+        $finder = new \Symfony\Component\Finder\Finder();
+        $finder->files()->name($this->filename($event))->in(base_path());
+    
+        foreach($finder as $file) {
+            $path = $file->getRealPath();
+            break;
+        }
+        
+        return $path;
     }
 }
