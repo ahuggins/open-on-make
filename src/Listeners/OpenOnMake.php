@@ -57,7 +57,7 @@ class OpenOnMake
             exec(
                 config('open-on-make.editor') . ' ' .
                 config('open-on-make.flags') . ' ' .
-                escapeshellcmd($path)
+                escapeshellarg($path)
             );
         }
     }
