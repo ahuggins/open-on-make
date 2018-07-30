@@ -27,11 +27,14 @@ class OpenOnMake
         'seeder' => 'database/seeds/',
         'feature' => 'tests/Feature/',
         'unit' => 'tests/Unit/',
-        'widget' => 'app/Widgets/'
+        'widget' => 'app/Widgets/',
+        'observer' => 'app/Observers/'
     ];
 
     public function handle($event)
     {
+        $this->paths = array_merge($this->paths, config('open-on-make.paths'));
+
         if ($this->envNotProduction() && $this->executedCommandWasMakeCommand($event)) {
             $classType = str_replace('make:', '', $event->command);
 
