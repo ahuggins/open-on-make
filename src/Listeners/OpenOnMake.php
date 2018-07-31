@@ -33,9 +33,13 @@ class OpenOnMake
 
     protected $options = [
         "-c" => "controller",
+        "--controller" => "controller",
         "-f" => "factory",
+        "--factory" => "factory",
         "-m" => "migration",
-        "-r" => "resource"
+        "--migration" => "migration",
+        "-r" => "resource",
+        "--resource" => "resource"
     ];
 
     protected $event;
@@ -68,7 +72,7 @@ class OpenOnMake
                 foreach ($command as $option) {
                     if (array_key_exists($option, $this->options)) {
                         $this->openFilesGeneratedInAdditionToModel($option, $name);
-                    } elseif ($option == '-a') {
+                    } elseif ($option == '-a' || $option == '--all') {
                         $this->openAllTypes($name);
                     }
                 }
@@ -78,9 +82,9 @@ class OpenOnMake
 
     public function openFilesGeneratedInAdditionToModel($option, $name)
     {
-        if ($option === '-r') {
+        if ($option === '-r' || $option === '--resource') {
             $this->openAdditionalFile($this->paths[$this->options[$option]], $name, '-c');
-        } elseif ($option === '-m') {
+        } elseif ($option === '-m' || $option === '--migration') {
             $this->openFile($this->getLatestMigrationFile());
         } else {
             $this->openAdditionalFile($this->paths[$this->options[$option]], $name, $option);
