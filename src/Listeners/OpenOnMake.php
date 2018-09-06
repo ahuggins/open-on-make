@@ -159,7 +159,7 @@ class OpenOnMake
 
     public function filename()
     {
-        return $this->event->input->getArgument('name') . '.php';
+        return str_replace('\\', '/', $this->event->input->getArgument('name') . '.php');
     }
 
     public function getTestPath()
