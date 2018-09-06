@@ -115,7 +115,9 @@ class OpenOnMake
 
     public function commandIsOpenable()
     {
-        return $this->envNotProduction() && $this->executedCommandWasMakeCommand();
+        return $this->envNotProduction() && 
+            $this->executedCommandWasMakeCommand() && 
+            $this->event->input->hasOption('help') === false;
     }
 
     public function determineFilePath()
