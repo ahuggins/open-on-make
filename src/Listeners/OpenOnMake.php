@@ -117,7 +117,7 @@ class OpenOnMake
     {
         return $this->envNotProduction() && 
             $this->executedCommandWasMakeCommand() && 
-            $this->event->input->hasOption('help') === false;
+            $this->event->input->getOption('help') !== true;
     }
 
     public function determineFilePath()
