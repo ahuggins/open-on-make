@@ -22,7 +22,7 @@ class OpenOnMake
         'policy' => 'app/Policies/',
         'provider' => 'app/Providers/',
         'request' => 'app/Http/Requests/',
-        'resource' => 'app/Http/Controllers/',
+        'resource' => 'app/Http/Resources/',
         'rule' => 'app/Rules/',
         'seeder' => 'database/seeds/',
         'feature' => 'tests/Feature/',
