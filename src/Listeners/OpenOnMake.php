@@ -28,7 +28,8 @@ class OpenOnMake
         'feature' => 'tests/Feature/',
         'unit' => 'tests/Unit/',
         'widget' => 'app/Widgets/',
-        'observer' => 'app/Observers/'
+        'observer' => 'app/Observers/',
+        'view' => 'resources/views/',
     ];
 
     protected $options = [
@@ -122,7 +123,7 @@ class OpenOnMake
 
     public function determineFilePath()
     {
-        $classType = str_replace('make:', '', $this->event->command);
+        $classType = $this->determineFileType();
 
         // special cases to handle
         if ($classType === 'auth') {
@@ -138,6 +139,11 @@ class OpenOnMake
                 return base_path($this->paths[$classType] . $this->filename());
             }
         }
+    }
+
+    public function determineFileType()
+    {
+        return str_replace('make:', '', $this->event->command);
     }
 
     public function openFile($path)
@@ -161,6 +167,10 @@ class OpenOnMake
 
     public function filename()
     {
+        if ($this->determineFileType() == 'view') {
+            return str_replace('.', '/', $this->event->input->getArgument('name')) . '.blade.php';
+        }
+
         return str_replace('\\', '/', $this->event->input->getArgument('name') . '.php');
     }
 
