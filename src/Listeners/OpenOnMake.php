@@ -161,7 +161,11 @@ class OpenOnMake
 
     public function filename()
     {
-        return str_replace('\\', '/', $this->event->input->getArgument('name') . '.php');
+        return preg_replace(
+            ['/\\\\/', '/^App\//'],
+            ['/', ''],
+            $this->event->input->getArgument('name') . '.php'
+        );
     }
 
     public function getTestPath()
