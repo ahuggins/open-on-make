@@ -2,6 +2,10 @@
 
 namespace OpenOnMake\Listeners;
 
+use Illuminate\Foundation\Console as FoundationConsole;
+use Illuminate\Routing\Console as RoutingConsole;
+use Illuminate\Database\Console as DatabaseConsole;
+
 class OpenOnMake
 {
     protected $paths = [
@@ -30,6 +34,33 @@ class OpenOnMake
         'widget' => 'app/Widgets/',
         'observer' => 'app/Observers/',
         'view' => 'resources/views/',
+    ];
+
+    protected $commands = [
+        'channel' => FoundationConsole\ChannelMakeCommand::class,
+        'command' => FoundationConsole\ConsoleMakeCommand::class,
+        'controller' => RoutingConsole\ControllerMakeCommand::class,
+        'event' => FoundationConsole\EventMakeCommand::class,
+        'exception' => FoundationConsole\ExceptionMakeCommand::class,
+        'factory' => DatabaseConsole\Factories\FactoryMakeCommand::class,
+        'job' => FoundationConsole\JobMakeCommand::class,
+        'listener' => FoundationConsole\ListenerMakeCommand::class,
+        'mail' => FoundationConsole\MailMakeCommand::class,
+        'middleware' => RoutingConsole\MiddlewareMakeCommand::class,
+        'migration' => DatabaseConsole\Migrations\MigrateMakeCommand::class,
+        'model' => FoundationConsole\ModelMakeCommand::class,
+        'notification' => FoundationConsole\NotificationMakeCommand::class,
+        'observer' => FoundationConsole\ObserverMakeCommand::class,
+        'policy' => FoundationConsole\PolicyMakeCommand::class,
+        'provider' => FoundationConsole\ProviderMakeCommand::class,
+        'request' => FoundationConsole\RequestMakeCommand::class,
+        'resource' => FoundationConsole\ResourceMakeCommand::class,
+        'rule' => FoundationConsole\RuleMakeCommand::class,
+        'seeder' => DatabaseConsole\Seeds\SeederMakeCommand::class,
+        'test' => FoundationConsole\TestMakeCommand::class,
+        'widget' => \Arrilot\Widgets\Console\WidgetMakeCommand::class,
+        'observer' => FoundationConsole\ObserverMakeCommand::class,
+        'view' => \Sven\ArtisanView\Commands\MakeView::class,
     ];
 
     protected $options = [
@@ -123,22 +154,33 @@ class OpenOnMake
 
     public function determineFilePath()
     {
-        $classType = $this->determineFileType();
+        $pathMethod = new \ReflectionMethod($this->getCommandClass(), 'getPath');
+        $pathMethod->setAccessible(true);
 
-        // special cases to handle
-        if ($classType === 'auth') {
-            return '';
-        } elseif ($classType === 'test') {
-            return base_path($this->getTestPath() . $this->filename());
-        } elseif ($classType === 'migration') {
-            return $this->getLatestMigrationFile();
-        } else {
-            if (! isset($this->paths[$classType])) {
-                return $this->findFile();
-            } else {
-                return base_path($this->paths[$classType] . $this->filename());
-            }
-        }
+        $qualifyMethod = new \ReflectionMethod($this->getCommandClass(), 'qualifyClass');
+        $qualifyMethod->setAccessible(true);
+
+        $instance = $this->getCommandInstance();
+
+        $qualifiedName = $qualifyMethod->invokeArgs($instance, [$this->event->input->getArgument('name')]);
+        return $pathMethod->invokeArgs($instance, [$qualifiedName]);
+    }
+
+    protected function getCommandInstance()
+    {
+        $container = app();
+
+        $instance = $container->make($this->getCommandClass());
+        $instance->setLaravel($container);
+
+        return $instance;
+    }
+
+    protected function getCommandClass()
+    {
+        $command = str_replace('make:', '', $this->event->command);
+
+        return $this->commands[$command] ?? null;
     }
 
     public function determineFileType()
