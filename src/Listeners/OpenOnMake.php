@@ -9,31 +9,10 @@ use Illuminate\Database\Console as DatabaseConsole;
 class OpenOnMake
 {
     protected $paths = [
-        'channel' => 'app/Broadcasting/',
-        'command' => 'app/Console/Commands/',
         'controller' => 'app/Http/Controllers/',
-        'event' => 'app/Events/',
-        'exception' => 'app/Exceptions/',
         'factory' => 'database/factories/',
-        'job' => 'app/Jobs/',
-        'listener' => 'app/Listeners/',
-        'mail' => 'app/Mail/',
-        'middleware' => 'app/Http/Middleware/',
         'migration' => '',
-        'model' => 'app/',
-        'notification' => 'app/Notifications/',
-        'observer' => 'app/Observers/',
-        'policy' => 'app/Policies/',
-        'provider' => 'app/Providers/',
-        'request' => 'app/Http/Requests/',
         'resource' => 'app/Http/Controllers/',
-        'rule' => 'app/Rules/',
-        'seeder' => 'database/seeds/',
-        'feature' => 'tests/Feature/',
-        'unit' => 'tests/Unit/',
-        'widget' => 'app/Widgets/',
-        'observer' => 'app/Observers/',
-        'view' => 'resources/views/',
     ];
 
     protected $commands = [
