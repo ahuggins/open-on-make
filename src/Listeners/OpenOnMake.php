@@ -95,7 +95,10 @@ class OpenOnMake
         $command = explode(' ', $this->event->input);
         
         if ($this->isMakeModelCommand($command)) {
-            $name = $command[1];
+
+            $exploded = explode('\\', $command[1]);
+            $name = trim(array_pop($exploded), "'");
+
             if (count($command) > 2) {
                 // remove the `make:model` and $name so left with options only
                 array_shift($command);
