@@ -24,5 +24,11 @@ class OpenOnMakeServiceProvider extends ServiceProvider
                 'OpenOnMake\Listeners\OpenOnMake'
             );
         }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+            \OpenOnMake\Commands\InstallEnvCommand::class,
+            ]);
+        }
     }
 }
