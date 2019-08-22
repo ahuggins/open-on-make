@@ -6,7 +6,7 @@ A package that makes it easy to have the `artisan make:` commands open the newly
 
 `composer require --dev ahuggins/open-on-make`
 
-This package defaults to sublime using the `subl` command, if you have aliased it to something else OR wish to use a different editor, you will need to add the following to your .env file.
+This package defaults to VS Code using the `code` command, if you have aliased it to something else OR wish to use a different editor, you will need to add the following to your .env file.
 
 ```
 OPEN_ON_MAKE_EDITOR=nameOfCliCommandForEditor
@@ -15,7 +15,7 @@ OPEN_ON_MAKE_FLAGS='-a' // Flags you need passed to the above Command
 
 > Most people will probably only need to add `OPEN_ON_MAKE_EDITOR` to their .env file.
 
-- publish the package config with 
+- publish the package config with
 
   `php artisan vendor:publish --tag=open-on-make`
 
@@ -38,7 +38,3 @@ VS Code = `OPEN_ON_MAKE_EDITOR=code` Provided you have the `code` shell command 
 ## License
 
 Licensed under the [MIT](license) license
-
-
-
-
