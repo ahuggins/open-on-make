@@ -62,7 +62,7 @@ class OpenOnMake
 
         if ($this->commandIsOpenable()) {
             $path = $this->determineFilePath();
-            
+
             $this->openFile($path);
 
             $this->checkForFlags();
@@ -72,7 +72,7 @@ class OpenOnMake
     public function checkForFlags()
     {
         $command = explode(' ', $this->event->input);
-        
+
         if ($this->isMakeModelCommand($command)) {
 
             $exploded = explode('\\', $command[1]);
@@ -82,7 +82,7 @@ class OpenOnMake
                 // remove the `make:model` and $name so left with options only
                 array_shift($command);
                 array_shift($command);
-    
+
                 foreach ($command as $option) {
                     if (array_key_exists($option, $this->options)) {
                         $this->openFilesGeneratedInAdditionToModel($option, $name);
@@ -129,23 +129,35 @@ class OpenOnMake
 
     public function commandIsOpenable()
     {
-        return $this->envNotProduction() && 
-            $this->executedCommandWasMakeCommand() && 
+        return $this->envNotProduction() &&
+            $this->executedCommandWasMakeCommand() &&
             $this->event->input->getOption('help') !== true;
     }
 
     public function determineFilePath()
     {
-        $pathMethod = new \ReflectionMethod($this->getCommandClass(), 'getPath');
-        $pathMethod->setAccessible(true);
+        $reflection = new \ReflectionClass($this->getCommandClass());
 
-        $qualifyMethod = new \ReflectionMethod($this->getCommandClass(), 'qualifyClass');
-        $qualifyMethod->setAccessible(true);
+        if ($reflection->getParentClass()->getName() === \Illuminate\Console\GeneratorCommand::class) {
+            $pathMethod = new \ReflectionMethod($this->getCommandClass(), 'getPath');
+            $pathMethod->setAccessible(true);
 
-        $instance = $this->getCommandInstance();
+            $qualifyMethod = new \ReflectionMethod($this->getCommandClass(), 'qualifyClass');
+            $qualifyMethod->setAccessible(true);
 
-        $qualifiedName = $qualifyMethod->invokeArgs($instance, [$this->event->input->getArgument('name')]);
-        return $pathMethod->invokeArgs($instance, [$qualifiedName]);
+            $instance = $this->getCommandInstance();
+
+            $qualifiedName = $qualifyMethod->invokeArgs($instance, [$this->event->input->getArgument('name')]);
+            return $pathMethod->invokeArgs($instance, [$qualifiedName]);
+        } else {
+            // Migration and View are special cases that do not extend the GeneratorComand. We can handle them like this:
+            if ($reflection->getName() === \Illuminate\Database\Console\Migrations\MigrateMakeCommand::class) {
+                return $this->getLatestMigrationFile();
+            } else {
+                // This will look for the filename as a last resort
+                return $this->findFile();
+            }
+        }
     }
 
     protected function getCommandInstance()
@@ -192,7 +204,9 @@ class OpenOnMake
     public function filename()
     {
         if ($this->determineFileType() == 'view') {
-            return str_replace('.', '/', $this->event->input->getArgument('name')) . '.blade.php';
+            $pathSeparator = str_replace('.', '/', $this->event->input->getArgument('name')) . '.blade.php';
+            $parts = explode('/', $pathSeparator);
+            return array_pop($parts);
         }
 
         return str_replace('\\', '/', $this->event->input->getArgument('name') . '.php');
@@ -229,17 +243,21 @@ class OpenOnMake
             'root' => base_path(),
         ];
     }
-    
+
     public function findFile()
     {
         $finder = new \Symfony\Component\Finder\Finder();
         $finder->files()->name($this->filename($this->event))->in(base_path());
-    
-        foreach ($finder as $file) {
-            $path = $file->getRealPath();
-            break;
+
+        $path = '';
+
+        if ($finder->hasResults()) {
+            foreach ($finder as $file) {
+                $path = $file->getRealPath();
+                break;
+            }
         }
-        
+
         return $path;
     }
 }
