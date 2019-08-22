@@ -151,7 +151,7 @@ class OpenOnMake
             return $pathMethod->invokeArgs($instance, [$qualifiedName]);
         } else {
             // Migration and View are special cases that do not extend the GeneratorComand. We can handle them like this:
-            if ($reflection->getName() === $this->commands['migrate']) {
+            if ($reflection->getName() === $this->commands['migration']) {
                 return $this->getLatestMigrationFile();
             } else {
                 // This will look for the filename as a last resort
