@@ -16,6 +16,7 @@ class OpenOnMake
     ];
 
     protected $commands = [
+        'action' => \Spatie\QueueableAction\ActionMakeCommand::class,
         'channel' => FoundationConsole\ChannelMakeCommand::class,
         'command' => FoundationConsole\ConsoleMakeCommand::class,
         'controller' => RoutingConsole\ControllerMakeCommand::class,
