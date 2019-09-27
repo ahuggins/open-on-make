@@ -75,7 +75,6 @@ class OpenOnMake
         $command = explode(' ', $this->event->input);
 
         if ($this->isMakeModelCommand($command)) {
-
             $exploded = explode('\\', $command[1]);
             $name = trim(array_pop($exploded), "'");
 
@@ -137,28 +136,33 @@ class OpenOnMake
 
     public function determineFilePath()
     {
-        $reflection = new \ReflectionClass($this->getCommandClass());
-
-        if ($reflection->getParentClass()->getName() === \Illuminate\Console\GeneratorCommand::class) {
-            $pathMethod = new \ReflectionMethod($this->getCommandClass(), 'getPath');
-            $pathMethod->setAccessible(true);
-
-            $qualifyMethod = new \ReflectionMethod($this->getCommandClass(), 'qualifyClass');
-            $qualifyMethod->setAccessible(true);
-
-            $instance = $this->getCommandInstance();
-
-            $qualifiedName = $qualifyMethod->invokeArgs($instance, [$this->event->input->getArgument('name')]);
-            return $pathMethod->invokeArgs($instance, [$qualifiedName]);
-        } else {
-            // Migration and View are special cases that do not extend the GeneratorComand. We can handle them like this:
+        if ($commandClass = $this->getCommandClass()) {
+            $reflection = new \ReflectionClass($commandClass);
+            if ($this->isSubClassOfGeneratorCommand($reflection)) {
+                $pathMethod = new \ReflectionMethod($commandClass, 'getPath');
+                $pathMethod->setAccessible(true);
+    
+                $qualifyMethod = new \ReflectionMethod($commandClass, 'qualifyClass');
+                $qualifyMethod->setAccessible(true);
+    
+                $instance = $this->getCommandInstance();
+    
+                $qualifiedName = $qualifyMethod->invokeArgs($instance, [$this->event->input->getArgument('name')]);
+                return $pathMethod->invokeArgs($instance, [$qualifiedName]);
+            }
+            // Migration is a special cases that do not extend the GeneratorComand. We can handle them like this:
             if ($reflection->getName() === $this->commands['migration']) {
                 return $this->getLatestMigrationFile();
-            } else {
-                // This will look for the filename as a last resort
-                return $this->findFile();
             }
         }
+        
+        // last thing is to just try to find the name of file.
+        return $this->findFile();
+    }
+
+    protected function isSubClassOfGeneratorCommand($reflection)
+    {
+        return $reflection->getParentClass()->getName() === \Illuminate\Console\GeneratorCommand::class;
     }
 
     protected function getCommandInstance()
@@ -174,7 +178,7 @@ class OpenOnMake
     protected function getCommandClass()
     {
         $command = str_replace('make:', '', $this->event->command);
-
+        
         return $this->commands[$command] ?? null;
     }
 
