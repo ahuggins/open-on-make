@@ -9,15 +9,21 @@
         }
     ],
     "require": {
-        "php" : "~7.0",
+        "php" : "~7.2",
         "illuminate/support": "~5.5.0|~5.6.0|~5.7.0|~5.8.0|~6.0",
         "laravel/helpers": "^1.1",
         "symfony/finder": "~3.3|^4.0|^4.3",
-        "imliam/laravel-env-set-command": "^1.0.0"
+        "imliam/laravel-env-set-command": "^1.0.0",
+        "phpunit/phpunit": "^8.4"
     },
     "autoload": {
         "psr-4": {
             "OpenOnMake\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     },
     "extra": {
@@ -26,5 +32,8 @@
                 "OpenOnMake\\Providers\\OpenOnMakeServiceProvider"
             ]
         }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^4.0"
     }
 }
