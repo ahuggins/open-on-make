@@ -45,7 +45,7 @@ OPEN_ON_MAKE_ENABLED=false
 
 Sublime - `OPEN_ON_MAKE_EDITOR=subl`
 
-PHPStorm - `OPEN_ON_MAKE_EDITOR=pstorm`
+PHPStorm - `OPEN_ON_MAKE_EDITOR=pstorm` Setup Instructions: https://www.jetbrains.com/help/phpstorm/opening-files-from-command-line.html
 
 Atom - `OPEN_ON_MAKE_EDITOR=atom` Provided you have shell commands installed: https://user-images.githubusercontent.com/1791228/38758555-814eb602-3f3f-11e8-8071-3c9690bb0374.png
 
