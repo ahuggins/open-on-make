@@ -1,0 +1,12 @@
+language: php
+
+php:
+  - 7.4
+
+before_script:
+  - cp .env.travis .env
+  - composer install --no-interaction
+
+cache:
+  directories:
+    - vendor
