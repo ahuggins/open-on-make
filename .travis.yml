@@ -7,7 +7,7 @@ before_script:
   - travis_retry composer update --no-interaction
 
 script:
-  - vendor/bin/phpunit
+  - ./vendor/bin/phpunit
 
 cache:
   directories:
