@@ -12,6 +12,11 @@ class File
         $this->open = $open;
     }
 
+    public function open($path)
+    {
+        $this->open->open($path);
+    }
+
     public function openLatestMigration()
     {
         $this->open->open(MigrationFile::getLatestMigrationFile());
