@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use OpenOnMake\File;
 use ReflectionClass;
 use OpenOnMake\Check;
 use Orchestra\Testbench\TestCase;
@@ -73,7 +74,7 @@ class CheckTest extends TestCase
     /** @test */
     public function it_checks_if_generator_command_is_not_subclass_of_Illumiate_Generator_Command()
     {
-        $this->assertFalse(Check::isSubClassOfGeneratorCommand(new ReflectionClass(new NotGenerator)));
+        $this->assertFalse(Check::isSubClassOfGeneratorCommand(new ReflectionClass(new NotGenerator(new File))));
     }
 
     /** @test */
@@ -97,6 +98,13 @@ class NotGenerator extends OpenOnMake
 }
 
 class IsGenerator extends \Illuminate\Console\GeneratorCommand {
+    protected $signature = 'make:onlyClassExists {name : The name of the migration}';
+
+    public function handle()
+    {
+        // dd('in handle');
+    }
+
     public function getStub()
     {
         # code...
