@@ -33,6 +33,16 @@ class Check
         return str_replace('make:', '', $command) === 'view';
     }
 
+    public static function isTestCommand($command) : bool
+    {
+        return str_replace('make:', '', $command) === 'test';
+    }
+
+    public static function isFactoryCommand($command) : bool
+    {
+        return str_replace('make:', '', $command) === 'factory';
+    }
+
     /** This is because making a Model is only command you can generate other classes */
     public static function isMakeModelCommand(string $command) : bool
     {

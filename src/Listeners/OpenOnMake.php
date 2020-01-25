@@ -60,7 +60,10 @@ class OpenOnMake
     
     public function determineFilePath()
     {
-        if ($commandClass = Paths::getCommandClass($this->commandString)) {
+        if (Check::isTestCommand($this->commandString) || Check::isFactoryCommand($this->commandString)) {
+            $name = $this->file->filename($this->commandString, $this->argName);
+            return $this->file->find($name);
+        } elseif ($commandClass = Paths::getCommandClass($this->commandString)) {
             $reflection = new \ReflectionClass($commandClass);
             if (Check::isSubClassOfGeneratorCommand($reflection)) {
                 $pathMethod = new \ReflectionMethod($commandClass, 'getPath');
