@@ -35,5 +35,9 @@
     },
     "require-dev": {
         "orchestra/testbench": "^4.0"
-    }
+    },
+    "config": {
+        "vendor-dir": ".Build/vendor",
+        "bin-dir": ".Build/bin"
+      }
 }
