@@ -14,17 +14,23 @@ class OpenOnMake
     protected $argName;
     protected $commandString;
     protected $help;
+
+    public function __construct(File $file) {
+        $this->file = $file;
+    }
     
     public function handle($event)
     {
-        $this->setProperties($event);
-        
-        if (Check::commandIsOpenable($this->commandString, $this->help)) {
-            $path = $this->determineFilePath();
+        if (Check::executedCommandWasMakeCommand($event->command)) {
+            $this->setProperties($event);
             
-            File::open($path);
-            
-            $this->checkForFlags();
+            if (Check::commandIsOpenable($this->commandString, $this->help)) {
+                $path = $this->determineFilePath();
+                
+                $this->file->open($path);
+                
+                $this->checkForFlags();
+            }            
         }
     }
     
@@ -43,9 +49,9 @@ class OpenOnMake
                 
                 foreach ($command as $option) {
                     if (Options::exist($option)) {
-                        File::openFilesGeneratedInAdditionToModel($option, $name);
+                        $this->file->openFilesGeneratedInAdditionToModel($option, $name);
                     } elseif (Options::isAll($option)) {
-                        File::openAllTypes($name);
+                        $this->file->openAllTypes($name);
                     }
                 }
             }
@@ -73,9 +79,9 @@ class OpenOnMake
                 return MigrationFile::getLatestMigrationFile();
             }
         }
-        
+
         // last thing is to just try to find the name of file.
-        return File::find(File::filename($this->commandString, $this->argName));
+        return $this->file->find($this->file->filename($this->commandString, $this->argName));
     }
     
     protected function getCommandInstance()
@@ -91,8 +97,8 @@ class OpenOnMake
     private function setProperties($event)
     {
         $this->event = $event;
+        $this->commandString = $this->event->command;
         $this->argName = $this->event->input->getArgument('name');
         $this->help = $this->event->input->getOption('help');
-        $this->commandString = $this->event->command;
     }
 }
