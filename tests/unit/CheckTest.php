@@ -9,6 +9,8 @@ use Orchestra\Testbench\TestCase;
 use OpenOnMake\Listeners\OpenOnMake;
 use Illuminate\Filesystem\Filesystem;
 use OpenOnMake\OpenFile;
+use OpenOnMake\Testing\IsGenerator;
+use OpenOnMake\Testing\NotGenerator;
 
 class CheckTest extends TestCase
 {
@@ -90,25 +92,3 @@ class CheckTest extends TestCase
         return new IsGenerator(new Filesystem);
     }
 }
-
-// Classes only used for testing, just need a class that has GeneratorCommand as parent, and one that doesn't
-
-class NotGenerator extends OpenOnMake
-{
-    
-}
-
-class IsGenerator extends \Illuminate\Console\GeneratorCommand {
-    protected $signature = 'make:onlyClassExists {name : The name of the migration}';
-
-    public function handle()
-    {
-        // dd('in handle');
-    }
-
-    public function getStub()
-    {
-        # code...
-    }
-}
-

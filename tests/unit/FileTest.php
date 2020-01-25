@@ -99,6 +99,13 @@ class FileTest extends TestCase
         $this->file->openAllTypes('-c', 'SomeModelName');
     }
 
+    /** @test */
+    public function it_delegates_open_to_open_file_class()
+    {
+        $this->open->expects('open')->once();
+        $this->file->open('something');
+    }
+
     protected function getPackageProviders($app)
     {
         return ['OpenOnMake\Providers\OpenOnMakeServiceProvider'];

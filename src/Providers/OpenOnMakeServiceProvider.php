@@ -2,7 +2,7 @@
 
 namespace OpenOnMake\Providers;
 
-use Tests\IsGenerator;
+use OpenOnMake\Testing\IsGenerator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Console\ModelMakeCommand;

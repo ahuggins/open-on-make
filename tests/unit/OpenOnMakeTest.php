@@ -94,6 +94,34 @@ class OpenOnMakeTest extends TestCase
         // exec('rm vendor/orchestra/testbench-core/laravel/app/Some.php');
     }
 
+    /** @test */
+    public function it_opens_tests()
+    {
+        $this->instance(File::class, Mockery::mock(File::class, function ($mock) {
+            $mock->shouldReceive('open')->once();
+            $mock->shouldReceive('find')->once()->andReturn('vendor/orchestra/testbench-core/tests/Feature/ATestName.php');
+            $mock->shouldReceive('filename')->once()->andReturn('ATestName.php');
+        }));
+    
+        $this->artisan('make:test', [
+            'name' => 'ATestName',
+        ]);
+    }
+
+    /** @test */
+    public function it_opens_factory()
+    {
+        $this->instance(File::class, Mockery::mock(File::class, function ($mock) {
+            $mock->shouldReceive('open')->once();
+            $mock->shouldReceive('find')->once()->andReturn('vendor/orchestra/testbench-core/laravel/database/factories/SomeFactoryName.php');
+            $mock->shouldReceive('filename')->once()->andReturn('SomeFactoryName.php');
+        }));
+    
+        $this->artisan('make:factory', [
+            'name' => 'SomeFactoryName',
+        ]);
+    }
+
     protected function getPackageProviders($app)
     {
         return ['OpenOnMake\Providers\OpenOnMakeServiceProvider'];
