@@ -75,7 +75,7 @@ class FileTest extends TestCase
     {
         $path = $this->file->find('packages.php');
 
-        $this->assertEquals('/Users/andrewhuggins/Code/valet/open-on-make/vendor/orchestra/testbench-core/laravel/bootstrap/cache/packages.php', $path);
+        $this->assertStringContainsString('orchestra/testbench-core/laravel/bootstrap/cache/packages.php', $path);
     }
 
     /** @test */
