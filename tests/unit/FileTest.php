@@ -2,16 +2,20 @@
 
 namespace Tests;
 
+use \Mockery;
 use Mockery\Mock;
 use OpenOnMake\File;
 use OpenOnMake\Check;
+use OpenOnMake\OpenFile;
 use Orchestra\Testbench\TestCase;
 
 class FileTest extends TestCase
 {
     public function setUp() : void
     {
-        $this->file = new File;
+        $this->open = Mockery::mock(OpenFile::class);
+        $this->file = new File($this->open);
+        parent::setUp();
     }
 
     /** @test */
@@ -43,8 +47,60 @@ class FileTest extends TestCase
     }
 
     /** @test */
-    public function it_calls_open_when_opening_migration()
+    public function it_calls_open_when_opening_additional_files()
     {
-        $this->assertTrue(true);
+        $this->open->expects('open')->once();
+
+        $this->file->openAdditionalFile('', 'SomeName', '-c');
+    }
+
+    /** @test */
+    public function it_calls_open_when_opening_latest_migration()
+    {
+        $this->open->expects('open')->once();
+
+        $this->file->openLatestMigration();
+    }
+
+    /** @test */
+    public function it_tries_to_find_the_file()
+    {
+        $path = $this->file->find('somefile.php');
+
+        $this->assertEquals('', $path);
+    }
+
+    /** @test */
+    public function it_tries_to_find_the_file_in_base_path()
+    {
+        $path = $this->file->find('packages.php');
+
+        $this->assertEquals('/Users/andrewhuggins/Code/valet/open-on-make/vendor/orchestra/testbench-core/laravel/bootstrap/cache/packages.php', $path);
+    }
+
+    /** @test */
+    public function it_opens_migration_generated_in_addition_to_model()
+    {
+        $this->open->expects('open')->once();
+        $this->file->openFilesGeneratedInAdditionToModel('-m', 'SomeModelName');
+    }
+
+    /** @test */
+    public function it_opens_additional_files_generated_in_addition_to_model()
+    {
+        $this->open->expects('open')->once();
+        $this->file->openFilesGeneratedInAdditionToModel('-r', 'SomeModelName');
+    }
+
+    /** @test */
+    public function it_open_all_types_when_flag_present()
+    {
+        $this->open->expects('open')->times(6);
+        $this->file->openAllTypes('-c', 'SomeModelName');
+    }
+
+    protected function getPackageProviders($app)
+    {
+        return ['OpenOnMake\Providers\OpenOnMakeServiceProvider'];
     }
 }

@@ -8,6 +8,7 @@ use OpenOnMake\Check;
 use Orchestra\Testbench\TestCase;
 use OpenOnMake\Listeners\OpenOnMake;
 use Illuminate\Filesystem\Filesystem;
+use OpenOnMake\OpenFile;
 
 class CheckTest extends TestCase
 {
@@ -74,7 +75,7 @@ class CheckTest extends TestCase
     /** @test */
     public function it_checks_if_generator_command_is_not_subclass_of_Illumiate_Generator_Command()
     {
-        $this->assertFalse(Check::isSubClassOfGeneratorCommand(new ReflectionClass(new NotGenerator(new File))));
+        $this->assertFalse(Check::isSubClassOfGeneratorCommand(new ReflectionClass(new NotGenerator(new File(new OpenFile)))));
     }
 
     /** @test */

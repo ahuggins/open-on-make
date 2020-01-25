@@ -8,18 +8,13 @@ use OpenOnMake\Files\MigrationFile;
 
 class File
 {
-    public function open($path)
-    {
-        exec(
-            config('open-on-make.editor') . ' ' .
-            config('open-on-make.flags') . ' ' .
-            escapeshellarg($path)
-        );
+    public function __construct(OpenFile $open) {
+        $this->open = $open;
     }
 
     public function openLatestMigration()
     {
-        $this->open(MigrationFile::getLatestMigrationFile());
+        $this->open->open(MigrationFile::getLatestMigrationFile());
     }
 
     public function getViewFileName($name)
@@ -62,7 +57,7 @@ class File
 
     public function openAdditionalFile($path, $name, $option)
     {
-        $this->open($path . $name . ucfirst(Options::getOption($option)) . '.php');
+        $this->open->open($path . $name . ucfirst(Options::getOption($option)) . '.php');
     }
 
     public function openAllTypes($name)
