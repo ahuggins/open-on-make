@@ -2,8 +2,12 @@
 
 namespace OpenOnMake\Providers;
 
+use Tests\IsGenerator;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Foundation\Console\ModelMakeCommand;
+use ImLiam\EnvironmentSetCommand\EnvironmentSetCommand;
+use Illuminate\Database\Console\Migrations\MigrateMakeCommand;
 
 class OpenOnMakeServiceProvider extends ServiceProvider
 {
@@ -21,14 +25,24 @@ class OpenOnMakeServiceProvider extends ServiceProvider
         if (config('open-on-make.enabled')) {
             Event::listen(
                 'Illuminate\Console\Events\CommandFinished',
-                'OpenOnMake\Listeners\OpenOnMake'
+                'OpenOnMake\Listeners\OpenOnMake',
             );
         }
 
-        if ($this->app->runningInConsole()) {
-            $this->commands([
+
+        $commands = [
             \OpenOnMake\Commands\InstallEnvCommand::class,
-            ]);
+        ];
+        
+        if ($this->app->environment() === 'testing') {
+            $commands[] = ModelMakeCommand::class;
+            $commands[] = MigrateMakeCommand::class;
+            $commands[] = IsGenerator::class;
+            $commands[] = EnvironmentSetCommand::class;
+        }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands($commands);
         }
     }
 }
