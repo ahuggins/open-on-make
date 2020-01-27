@@ -106,6 +106,8 @@ class OpenOnMakeTest extends TestCase
         $this->artisan('make:test', [
             'name' => 'ATestName',
         ]);
+
+        exec('rm vendor/orchestra/testbench-core/laravel/tests/Feature/ATestName.php');
     }
 
     /** @test */
@@ -120,6 +122,8 @@ class OpenOnMakeTest extends TestCase
         $this->artisan('make:factory', [
             'name' => 'SomeFactoryName',
         ]);
+
+        exec('rm vendor/orchestra/testbench-core/laravel/database/factories/SomeFactoryName.php');
     }
 
     protected function getPackageProviders($app)
