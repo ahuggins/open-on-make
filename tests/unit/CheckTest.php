@@ -17,7 +17,7 @@ class CheckTest extends TestCase
     /** @test */
     public function it_checks_if_empty_command_is_not_a_make_model_command()
     {
-        $this->assertFalse(Check::isMakeModelCommand());
+        $this->assertFalse(Check::isMakeModelCommand(null));
     }
 
     /** @test */
