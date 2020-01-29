@@ -13,7 +13,7 @@ class Check
         return config('app.env') !== 'production';
     }
 
-    public static function executedCommandWasMakeCommand(string $command) : bool
+    public static function executedCommandWasMakeCommand(string $command = null) : bool
     {
         return str_contains($command, 'make:');
     }
