@@ -15,6 +15,12 @@ use OpenOnMake\Testing\NotGenerator;
 class CheckTest extends TestCase
 {
     /** @test */
+    public function it_checks_if_empty_command_is_not_a_make_model_command()
+    {
+        $this->assertFalse(Check::isMakeModelCommand());
+    }
+
+    /** @test */
     public function it_verifies_the_command_run_is_a_make_command()
     {
         $this->assertTrue(Check::executedCommandWasMakeCommand('make:model'));
