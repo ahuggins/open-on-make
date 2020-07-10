@@ -26,7 +26,7 @@ class OpenOnMakeTest extends TestCase
         $this->instance(File::class, Mockery::mock(File::class, function ($mock) {
             $mock->shouldReceive('open')->once();
         }));
-    
+
         $this->artisan('make:model', ['name' => 'Some']);
     }
 
@@ -37,7 +37,7 @@ class OpenOnMakeTest extends TestCase
             $mock->shouldReceive('open')->once();
             $mock->shouldReceive('openAllTypes')->once();
         }));
-    
+
         $this->artisan('make:model', [
             'name' => 'Some',
             '-a'
@@ -52,11 +52,11 @@ class OpenOnMakeTest extends TestCase
         $this->instance(File::class, Mockery::mock(File::class, function ($mock) {
             $mock->shouldReceive('open')->once();
         }));
-    
+
         $this->artisan('make:migration', [
             'name' => 'some_migration_name',
         ]);
-        
+
         $latestPath = MigrationFile::getLatestMigrationFile();
 
         exec('rm ' . $latestPath);
@@ -69,7 +69,7 @@ class OpenOnMakeTest extends TestCase
             $mock->shouldReceive('open')->once();
             $mock->shouldReceive('openFilesGeneratedInAdditionToModel')->once();
         }));
-    
+
         $this->artisan('make:model', [
             'name' => 'Some',
             '-c'
@@ -86,7 +86,7 @@ class OpenOnMakeTest extends TestCase
             $mock->shouldReceive('find')->once();
             $mock->shouldReceive('filename')->once();
         }));
-    
+
         $this->artisan('make:onlyClassExists', [
             'name' => 'SomeThingToDo',
         ]);
@@ -99,14 +99,37 @@ class OpenOnMakeTest extends TestCase
     {
         $this->instance(File::class, Mockery::mock(File::class, function ($mock) {
             $mock->shouldReceive('open')->once();
-            $mock->shouldReceive('find')->once()->andReturn('vendor/orchestra/testbench-core/tests/Feature/ATestName.php');
+            $mock->shouldReceive('find')->once()->andReturn('vendor/orchestra/testbench-core/laravel/tests/Feature/ATestName.php');
             $mock->shouldReceive('filename')->once()->andReturn('ATestName.php');
         }));
-    
+
         $this->artisan('make:test', [
             'name' => 'ATestName',
         ]);
+
+        exec('rm vendor/orchestra/testbench-core/laravel/tests/Feature/ATestName.php');
     }
+
+    /** @test */
+    public function it_opens_tests_with_path()
+    {
+        $this->assertFalse(file_exists('vendor/orchestra/testbench-core/laravel/tests/Feature/Http/Controller/Auth/ATestName.php'));
+
+        $this->instance(File::class, Mockery::mock(File::class, function ($mock) {
+            $mock->shouldReceive('open')->once();
+            $mock->shouldReceive('find')->once()->andReturn('vendor/orchestra/testbench-core/laravel/tests/Feature/Http/Controller/Auth/ATestName.php');
+            $mock->shouldReceive('filename')->once()->andReturn('ATestName.php');
+        }));
+
+        $this->artisan('make:test', [
+            'name' => 'Http/Controller/Auth/ATestName',
+        ]);
+
+        $this->assertTrue(file_exists('vendor/orchestra/testbench-core/laravel/tests/Feature/Http/Controller/Auth/ATestName.php'));
+
+        exec('rm vendor/orchestra/testbench-core/laravel/tests/Feature/Http/Controller/Auth/ATestName.php');
+    }
+
 
     /** @test */
     public function it_opens_factory()
@@ -116,7 +139,7 @@ class OpenOnMakeTest extends TestCase
             $mock->shouldReceive('find')->once()->andReturn('vendor/orchestra/testbench-core/laravel/database/factories/SomeFactoryName.php');
             $mock->shouldReceive('filename')->once()->andReturn('SomeFactoryName.php');
         }));
-    
+
         $this->artisan('make:factory', [
             'name' => 'SomeFactoryName',
         ]);
