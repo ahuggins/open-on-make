@@ -37,14 +37,16 @@ class File
     public function filename($commandString, $name)
     {
         if (Check::isViewCommand($commandString)) {
-            return self::getViewFileName($name);
+            return $this->getViewFileName($name);
         }
 
-        return self::getFileName($name);
+        return $this->getFileName($name);
     }
 
     public function find($filename)
     {
+        $filename = $this->getFileNameFromSplFileInfo($filename);
+
         $finder = new \Symfony\Component\Finder\Finder();
         $finder->files()->name($filename)->in(base_path());
 
@@ -84,5 +86,13 @@ class File
             $option = Options::isResource($option) ? '-c' : $option;
             $this->openAdditionalFile(Paths::getPath(Options::getOption($option)), $name, $option);
         }
+    }
+
+    public function getFileNameFromSplFileInfo($filename)
+    {
+        if ($filename instanceof \SplFileInfo) {
+            return $filename->getFileName();
+        }
+        return $filename;
     }
 }
