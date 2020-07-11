@@ -15,7 +15,7 @@ class Check
 
     public static function executedCommandWasMakeCommand(string $command = null) : bool
     {
-        return str_contains($command, 'make:');
+        return $command ? str_contains($command, 'make:') : false;
     }
 
     public static function notCommandHelp(bool $help = false) : bool
