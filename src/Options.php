@@ -4,7 +4,7 @@ namespace OpenOnMake;
 
 class Options
 {
-    public static $options = [
+    private $options = [
         "-c" => "controller",
         "--controller" => "controller",
         "-f" => "factory",
@@ -15,33 +15,33 @@ class Options
         "--resource" => "resource"
     ];
 
-    public static function getOptions()
+    public function getOptions()
     {
-        return self::$options;
+        return $this->options;
     }
 
-    public static function getOption($option)
+    public function getOption($option)
     {
-        return self::getOptions()[$option];
+        return $this->getOptions()[$option];
     }
 
-    public static function isResource($option)
+    public function isResource($option)
     {
         return $option === '-r' || $option === '--resource' || $option === 'resource';
     }
 
-    public static function isMigration($option)
+    public function isMigration($option)
     {
         return $option === '-m' || $option === '--migration' || $option === 'migration';
     }
 
-    public static function isAll($option)
+    public function isAll($option)
     {
         return $option === '-a' || $option === '--all';
     }
     
-    public static function exist($option)
+    public function exist($option)
     {
-        return array_key_exists($option, self::getOptions());
+        return array_key_exists($option, $this->getOptions());
     }
 }
