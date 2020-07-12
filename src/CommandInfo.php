@@ -18,9 +18,9 @@ class CommandInfo
     /**
      * The command string from Artisan
      *
-     * @var string
+     * @var ?string
      */
-    private string $commandString;
+    private ?string $commandString = null;
     /**
      * The name the command will use
      *
@@ -38,8 +38,10 @@ class CommandInfo
     {
         $this->rawEvent = $event;
         $this->commandString = $this->rawEvent->command;
-        $this->argName = $this->rawEvent->input->getArgument('name');
-        $this->help = $this->rawEvent->input->getOption('help');
+        if ($this->commandString) {
+            $this->argName = $this->rawEvent->input->getArgument('name');
+            $this->help = $this->rawEvent->input->getOption('help');
+        }
     }
 
     public function getEvent() : CommandFinished
@@ -47,7 +49,7 @@ class CommandInfo
         return $this->rawEvent;
     }
 
-    public function getCommandString() : string
+    public function getCommandString() : ?string
     {
         return $this->commandString;
     }
@@ -67,6 +69,16 @@ class CommandInfo
         return str_contains($this->getCommandString(), 'make:');
     }
 
+    /**
+     * You can run artisan without a command..default to Lists
+     *
+     * @return boolean
+     */
+    public function isListCommand()
+    {
+        return $this->getCommandString() === null;
+    }
+
     public function notCommandHelp() : bool
     {
         return $this->getHelp() !== true;
@@ -75,6 +87,7 @@ class CommandInfo
     public function isOpenable() : bool
     {
         return Check::envNotProduction() &&
+            !$this->isListCommand() &&
             $this->isMakeCommand() &&
             $this->notCommandHelp();
     }
