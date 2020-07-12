@@ -16,12 +16,16 @@ To do that, I need a pretty good list of different commands that would be called
 3. `make:cast`
 4. 
 
-[ ] Handle if `artisan` with no command is run
-[ ] First check should be if the command is a `make:` command, and if not, just bail.
+[X] Handle if `artisan` with no command is run
+[X] First check should be if the command is a `make:` command, and if not, just bail.
+    - CommandInfo->isOpenable() checks if it's a make: command
+    - Also checks if it's not just `artisan` meaning no additional command provided
 
 ## The idea here is to break the code into modular parts.
 
-[ ] Move the code for if the Command is a `make:test` command to its own file.
-[ ] Move `checkForFlags` code to its own file
+[X] Move the code for if the Command is a `make:test` command to its own file.
+    - CommandInfo ended up being where a lot of code should live. isMakeCommand lives here
 [ ] `isSubClassOfGeneratorCommand` to its own file
-[ ] `Migration handler` to its own file
+[X] `Migration handler` to its own file
+    - Ended up moving to the File class. Better, but might be temporary
+[ ] Move `checkForFlags` code to its own file
