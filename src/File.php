@@ -8,8 +8,22 @@ use OpenOnMake\Files\MigrationFile;
 
 class File
 {
-    public function __construct(OpenFile $open) {
+    private $options;
+    private $open;
+    
+    public function __construct(OpenFile $open, Options $options)
+    {
         $this->open = $open;
+        $this->options = $options;
+    }
+
+    public function openOptionalFiles($option, $name)
+    {
+        if ($this->options->exist($option)) {
+            $this->openFilesGeneratedInAdditionToModel($option, $name);
+        } elseif ($this->options->isAll($option)) {
+            $this->openAllTypes($name);
+        }
     }
 
     public function open($path)
@@ -64,15 +78,15 @@ class File
 
     public function openAdditionalFile($path, $name, $option)
     {
-        $this->open->open($path . $name . ucfirst(Options::getOption($option)) . '.php');
+        $this->open->open($path . $name . ucfirst($this->options->getOption($option)) . '.php');
     }
 
     public function openAllTypes($name)
     {
-        foreach (Options::getOptions() as $key => $value) {
-            if (! Options::isMigration($value) && ! Options::isResource($value)) {
+        foreach ($this->options->getOptions() as $key => $value) {
+            if (! $this->options->isMigration($value) && ! $this->options->isResource($value)) {
                 $this->openAdditionalFile(Paths::getPath($value), $name, $key);
-            } elseif (Options::isMigration($value)) {
+            } elseif ($this->options->isMigration($value)) {
                 $this->openLatestMigration();
             }
         }
@@ -80,11 +94,11 @@ class File
 
     public function openFilesGeneratedInAdditionToModel($option, $name)
     {
-        if (Options::isMigration($option)) {
+        if ($this->options->isMigration($option)) {
             $this->openLatestMigration();
         } else {
-            $option = Options::isResource($option) ? '-c' : $option;
-            $this->openAdditionalFile(Paths::getPath(Options::getOption($option)), $name, $option);
+            $option = $this->options->isResource($option) ? '-c' : $option;
+            $this->openAdditionalFile(Paths::getPath($this->options->getOption($option)), $name, $option);
         }
     }
 
