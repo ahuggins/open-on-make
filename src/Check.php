@@ -5,6 +5,7 @@ namespace OpenOnMake;
 use App;
 use Reflection;
 use ReflectionClass;
+use OpenOnMake\CommandInfo;
 
 class Check
 {
@@ -49,10 +50,10 @@ class Check
         return str_contains($command, ':model');
     }
 
-    public static function commandIsOpenable($command, $help = false) : bool
+    public static function commandIsOpenable(CommandInfo $commandInfo) : bool
     {
         return Check::envNotProduction() &&
-            Check::executedCommandWasMakeCommand($command) &&
-            Check::notCommandHelp($help);
+            $commandInfo->isMakeCommand() &&
+            $commandInfo->notCommandHelp();
     }
 }
