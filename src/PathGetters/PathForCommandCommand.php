@@ -14,11 +14,8 @@ class PathForCommandCommand extends AbstractPath
         $commandClass = $commandInfo->getCommandClass();
         $reflection = new \ReflectionClass($commandClass);
         if (Check::isSubClassOfGeneratorCommand($reflection)) {
-            $pathMethod = new \ReflectionMethod($commandClass, 'getPath');
-            $pathMethod->setAccessible(true);
-
-            $qualifyMethod = new \ReflectionMethod($commandClass, 'qualifyClass');
-            $qualifyMethod->setAccessible(true);
+            $pathMethod = $this->setGetPathToPublic($commandClass);
+            $qualifyMethod = $this->setQualifyClassToPublic($commandClass);
 
             $instance = $this->getCommandInstance($commandInfo);
 
