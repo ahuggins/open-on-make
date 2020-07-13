@@ -4,7 +4,7 @@ namespace OpenOnMake;
 
 class OpenFile
 {
-    public function open($path)
+    public static function open($path)
     {
         exec(
             config('open-on-make.editor') . ' ' .
