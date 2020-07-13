@@ -26,7 +26,7 @@ class CommandInfo
      *
      * @var string
      */
-    private string $argName;
+    private ?string $argName;
 
     /**
      * If the command was run with --help
@@ -38,10 +38,32 @@ class CommandInfo
     {
         $this->rawEvent = $event;
         $this->commandString = $this->rawEvent->command;
-        if ($this->commandString) {
+        if ($this->isOpenable()) {
             $this->argName = $this->rawEvent->input->getArgument('name');
             $this->help = $this->rawEvent->input->getOption('help');
+            $this->filename = $this->ensurePHPExtension();
+            $this->splFile = new \SplFileInfo($this->filename);
         }
+    }
+
+    public function ensurePHPExtension()
+    {
+        $this->alertUserNotToAddPHPExtension();
+        
+        $name = str_replace('\\', '/', $this->argName);
+        $name = str_replace('.php', '', $name);
+        $name = $name . '.php';
+        return $name;
+    }
+
+    public function getFilename()
+    {
+        return $this->filename;
+    }
+
+    public function getSplFile()
+    {
+        return $this->splFile;
     }
 
     public function getEvent() : CommandFinished
@@ -54,7 +76,7 @@ class CommandInfo
         return $this->commandString;
     }
 
-    public function getArgName() : string
+    public function getArgName() : ?string
     {
         return $this->argName;
     }
@@ -69,6 +91,11 @@ class CommandInfo
         return str_contains($this->getCommandString(), 'make:');
     }
 
+    public function isMigrationCommand()
+    {
+        return str_contains($this->getCommandString(), ':migration');
+    }
+
     /**
      * You can run artisan without a command..default to Lists
      *
@@ -76,7 +103,7 @@ class CommandInfo
      */
     public function isListCommand()
     {
-        return $this->getCommandString() === null;
+        return $this->getCommandString() === null || $this->getCommandString() === 'list';
     }
 
     public function notCommandHelp() : bool
@@ -87,9 +114,20 @@ class CommandInfo
     public function isOpenable() : bool
     {
         return Check::envNotProduction() &&
-            !$this->isListCommand() &&
+            $this->hasName() &&
+            ! $this->isListCommand() &&
             $this->isMakeCommand() &&
             $this->notCommandHelp();
+    }
+
+    /**
+     * Fetched from `input` so that Openable does not access $argName before set.
+     *
+     * @return boolean
+     */
+    private function hasName()
+    {
+        return isset($this->rawEvent->input->getArguments()['name']);
     }
 
     /** This is because making a Model is only command you can generate other classes */
@@ -130,5 +168,15 @@ class CommandInfo
             return null;
         }
         return Paths::getCommandPath($key);
+    }
+
+    public function alertUserNotToAddPHPExtension()
+    {
+        if (str_contains($this->argName, '.php')) {
+            $this->rawEvent->output->writeln('<comment>Open-On-Make: </comment><error>You should not provide .php</error>');
+            $this->rawEvent->output->writeln('<comment>Open-On-Make: </comment><error>When user provides `.php` extension, this results in a file with `.php.php` as extension.</error>');
+            $this->rawEvent->output->writeln('<comment>Open-On-Make: </comment><error>Open-On-Make can not open file.</error>');
+            exit;
+        }
     }
 }
