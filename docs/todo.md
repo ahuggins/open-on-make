@@ -29,3 +29,7 @@ To do that, I need a pretty good list of different commands that would be called
 [X] `Migration handler` to its own file
     - Ended up moving to the File class. Better, but might be temporary
 [ ] Move `checkForFlags` code to its own file
+
+
+## New Stuff
+[ ] make:component creates a blade file as well, would be cool to open both
