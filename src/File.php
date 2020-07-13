@@ -4,7 +4,9 @@ namespace OpenOnMake;
 
 use OpenOnMake\Check;
 use OpenOnMake\Paths;
-use OpenOnMake\Files\MigrationFile;
+use OpenOnMake\Options;
+use OpenOnMake\CommandInfo;
+use OpenOnMake\Openers\MigrationFile;
 
 class File
 {
@@ -29,11 +31,6 @@ class File
     public function open($path)
     {
         $this->open->open($path);
-    }
-
-    public function openLatestMigration()
-    {
-        $this->open->open(MigrationFile::getLatestMigrationFile());
     }
 
     public function getViewFileName($name)
@@ -87,7 +84,7 @@ class File
             if (! $this->options->isMigration($value) && ! $this->options->isResource($value)) {
                 $this->openAdditionalFile(Paths::getPath($value), $name, $key);
             } elseif ($this->options->isMigration($value)) {
-                $this->openLatestMigration();
+                MigrationFile::open();
             }
         }
     }
@@ -95,7 +92,7 @@ class File
     public function openFilesGeneratedInAdditionToModel($option, $name)
     {
         if ($this->options->isMigration($option)) {
-            $this->openLatestMigration();
+            MigrationFile::open();
         } else {
             $option = $this->options->isResource($option) ? '-c' : $option;
             $this->openAdditionalFile(Paths::getPath($this->options->getOption($option)), $name, $option);
