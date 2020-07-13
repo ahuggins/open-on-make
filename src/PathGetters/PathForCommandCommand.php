@@ -19,12 +19,8 @@ class PathForCommandCommand
 
             $instance = $this->getCommandInstance($commandInfo);
 
-            $qualifiedName = $qualifyMethod->invokeArgs($instance, [$this->argName]);
+            $qualifiedName = $qualifyMethod->invokeArgs($instance, [$commandInfo->getArgName()]);
             return $pathMethod->invokeArgs($instance, [$qualifiedName]);
-        }
-        // Migration is a special cases that do not extend the GeneratorComand. We can handle them like this:
-        if ($reflection->getName() === Paths::getCommandPath('migration')) {
-            return MigrationFile::getLatestMigrationFile();
         }
     }
 
@@ -32,7 +28,7 @@ class PathForCommandCommand
     {
         $container = app();
 
-        $instance = $container->make(Paths::getCommandClass($commandInfo->getCommandString()));
+        $instance = $container->make($commandInfo->getCommandClass());
         $instance->setLaravel($container);
 
         return $instance;
