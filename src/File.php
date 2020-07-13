@@ -54,13 +54,11 @@ class File
         return $this->getFileName($name);
     }
 
-    public function find($filename)
+    public function find(CommandInfo $commandInfo)
     {
-        $filename = $this->getFileNameFromSplFileInfo($filename);
-
         $finder = new \Symfony\Component\Finder\Finder();
-        $finder->files()->name($filename)->in(base_path());
-
+        $finder->files()->depth('>= 0')->depth('< 10')->name($commandInfo->getSplFile()->getFileName())->in(base_path());
+        
         $path = '';
 
         if ($finder->hasResults()) {
