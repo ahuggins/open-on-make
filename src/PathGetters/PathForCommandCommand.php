@@ -37,4 +37,18 @@ class PathForCommandCommand
 
         return $instance;
     }
+
+    public function setGetPathToPublic($commandClass)
+    {
+        $pathMethod = new \ReflectionMethod($commandClass, 'getPath');
+        $pathMethod->setAccessible(true);
+        return $pathMethod;
+    }
+
+    public function setQualifyClassToPublic($commandClass)
+    {
+        $qualifyMethod = new \ReflectionMethod($commandClass, 'qualifyClass');
+        $qualifyMethod->setAccessible(true);
+        return $qualifyMethod;
+    }
 }
