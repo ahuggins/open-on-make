@@ -49,11 +49,4 @@ class Check
     {
         return str_contains($command, ':model');
     }
-
-    public static function commandIsOpenable(CommandInfo $commandInfo) : bool
-    {
-        return Check::envNotProduction() &&
-            $commandInfo->isMakeCommand() &&
-            $commandInfo->notCommandHelp();
-    }
 }
