@@ -6,6 +6,7 @@ use \Mockery;
 use Mockery\Mock;
 use OpenOnMake\File;
 use OpenOnMake\Check;
+use OpenOnMake\Options;
 use OpenOnMake\OpenFile;
 use Orchestra\Testbench\TestCase;
 
@@ -14,7 +15,7 @@ class FileTest extends TestCase
     public function setUp() : void
     {
         $this->open = Mockery::mock(OpenFile::class);
-        $this->file = new File($this->open);
+        $this->file = new File($this->open, new Options);
         parent::setUp();
     }
 
@@ -52,14 +53,6 @@ class FileTest extends TestCase
         $this->open->expects('open')->once();
 
         $this->file->openAdditionalFile('', 'SomeName', '-c');
-    }
-
-    /** @test */
-    public function it_calls_open_when_opening_latest_migration()
-    {
-        $this->open->expects('open')->once();
-
-        $this->file->openLatestMigration();
     }
 
     /** @test */

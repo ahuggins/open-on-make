@@ -2,19 +2,8 @@
 
 namespace Tests;
 
-use OpenOnMake\File;
-use ReflectionClass;
-use OpenOnMake\Check;
-use OpenOnMake\OpenFile;
-use OpenOnMake\CommandInfo;
 use OpenOnMake\CommandInput;
 use Orchestra\Testbench\TestCase;
-use OpenOnMake\Testing\IsGenerator;
-use OpenOnMake\Listeners\OpenOnMake;
-use OpenOnMake\Testing\NotGenerator;
-use Illuminate\Filesystem\Filesystem;
-use Illuminate\Console\Events\CommandFinished;
-use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\StringInput;
 
 class CommandInputTest extends TestCase

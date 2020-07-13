@@ -9,6 +9,8 @@ use Orchestra\Testbench\TestCase;
 use OpenOnMake\Listeners\OpenOnMake;
 use Illuminate\Filesystem\Filesystem;
 use OpenOnMake\OpenFile;
+use OpenOnMake\Options;
+use OpenOnMake\PathGetters\FilePath;
 use OpenOnMake\Testing\IsGenerator;
 use OpenOnMake\Testing\NotGenerator;
 
@@ -45,12 +47,6 @@ class CheckTest extends TestCase
     }
 
     /** @test */
-    public function it_checks_if_command_is_openable()
-    {
-        $this->assertTrue(Check::commandIsOpenable('make:model'));
-    }
-
-    /** @test */
     public function it_checks_if_command_is_a_make_model_command()
     {
         $this->assertTrue(Check::isMakeModelCommand('make:model'));
@@ -77,13 +73,13 @@ class CheckTest extends TestCase
     /** @test */
     public function it_checks_if_env_is_not_production()
     {
-        $this->assertTrue(Check::envNotProduction());   
+        $this->assertTrue(Check::envNotProduction());
     }
 
     /** @test */
     public function it_checks_if_generator_command_is_not_subclass_of_Illumiate_Generator_Command()
     {
-        $this->assertFalse(Check::isSubClassOfGeneratorCommand(new ReflectionClass(new NotGenerator(new File(new OpenFile)))));
+        $this->assertFalse(Check::isSubClassOfGeneratorCommand(new ReflectionClass(new NotGenerator(new File(new OpenFile, new Options), new FilePath))));
     }
 
     /** @test */
