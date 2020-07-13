@@ -7,7 +7,7 @@ use OpenOnMake\Paths;
 use OpenOnMake\CommandInfo;
 use OpenOnMake\Files\MigrationFile;
 
-class PathForCommandCommand extends AbstractPath
+class PathForCommandCommand
 {
     public function handle(CommandInfo $commandInfo)
     {
