@@ -25,7 +25,7 @@ class OpenOnMakeServiceProvider extends ServiceProvider
         if (config('open-on-make.enabled')) {
             Event::listen(
                 'Illuminate\Console\Events\CommandFinished',
-                'OpenOnMake\Listeners\OpenOnMake',
+                'OpenOnMake\Listeners\OpenOnMake'
             );
         }
 
