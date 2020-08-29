@@ -46,4 +46,11 @@ class CommandInputTest extends TestCase
         $this->assertCount(1, $commandInput->getOptions());
         $this->assertEquals(array_values(['-c']), array_values($commandInput->getOptions()));
     }
+
+    /** @test */
+    public function it_returns_className_from_argument_with_full_qualified_classname()
+    {
+        $commandInput = $this->makeCommandInput('make:model App\\\Models\\\SomeName');
+        $this->assertEquals('SomeName', $commandInput->getClassNameOfNameArgument());
+    }
 }
