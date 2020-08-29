@@ -7,30 +7,25 @@ use Illuminate\Support\Facades\Storage;
 
 class MigrationFile
 {
-    public static function open()
+    public function getLatestMigration()
     {
-        OpenFile::open(self::getLatestMigration());
-    }
-
-    public static function getLatestMigration()
-    {
-        self::createDiskForAppRoot();
+        $this->createDiskForAppRoot();
 
         $newestMigration = collect(
             Storage::disk('easyOpen')->files('database/migrations')
         )->pop();
 
-        self::unsetDiskForAppRoot();
+        $this->unsetDiskForAppRoot();
 
         return base_path($newestMigration);
     }
 
-    private static function unsetDiskForAppRoot()
+    private function unsetDiskForAppRoot()
     {
         unset(app()->config['filesystems.disks.easyOpen']);
     }
 
-    private static function createDiskForAppRoot()
+    private function createDiskForAppRoot()
     {
         app()->config["filesystems.disks.easyOpen"] = [
             'driver' => 'local',
