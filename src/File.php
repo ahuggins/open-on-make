@@ -6,17 +6,20 @@ use OpenOnMake\Check;
 use OpenOnMake\Paths;
 use OpenOnMake\Options;
 use OpenOnMake\CommandInfo;
+use Symfony\Component\Finder\Finder;
 use OpenOnMake\Openers\MigrationFile;
 
 class File
 {
     private $options;
     private $open;
+    private $finder;
     
-    public function __construct(OpenFile $open, Options $options)
+    public function __construct(OpenFile $open, Options $options, Finder $finder)
     {
         $this->open = $open;
         $this->options = $options;
+        $this->finder = $finder;
     }
 
     public function openOptionalFiles($option, $name)
@@ -33,36 +36,19 @@ class File
         $this->open->open($path);
     }
 
-    public function getViewFileName($name)
-    {
-        $pathSeparator = str_replace('.', '/', $name) . '.blade.php';
-        $parts = explode('/', $pathSeparator);
-        return array_pop($parts);
-    }
-
     public function getFileName($name)
     {
         return str_replace('\\', '/', $name . '.php');
     }
 
-    public function filename($commandString, $name)
-    {
-        if (Check::isViewCommand($commandString)) {
-            return $this->getViewFileName($name);
-        }
-
-        return $this->getFileName($name);
-    }
-
     public function find(CommandInfo $commandInfo)
     {
-        $finder = new \Symfony\Component\Finder\Finder();
-        $finder->files()->depth('>= 0')->depth('< 10')->name($commandInfo->getSplFile()->getFileName())->in(base_path());
+        $this->finder->files()->depth('>= 0')->depth('< 10')->name($commandInfo->getSplFile()->getFileName())->in(base_path());
         
         $path = '';
 
-        if ($finder->hasResults()) {
-            foreach ($finder as $file) {
+        if ($this->finder->hasResults()) {
+            foreach ($this->finder as $file) {
                 $path = $file->getRealPath();
                 break;
             }
@@ -95,13 +81,5 @@ class File
             $option = $this->options->isResource($option) ? '-c' : $option;
             $this->openAdditionalFile(Paths::getPath($this->options->getOption($option)), $name, $option);
         }
-    }
-
-    public function getFileNameFromSplFileInfo($filename)
-    {
-        if ($filename instanceof \SplFileInfo) {
-            return $filename->getFileName();
-        }
-        return $filename;
     }
 }
