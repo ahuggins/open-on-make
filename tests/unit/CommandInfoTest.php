@@ -5,9 +5,10 @@ namespace Tests;
 use Mockery;
 use OpenOnMake\CommandInfo;
 use Orchestra\Testbench\TestCase;
-use Illuminate\Console\Events\CommandFinished;
+use Illuminate\Support\Facades\Config;
+use Mockery\Mock;
+use SplFileInfo;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class CommandInfoTest extends TestCase
@@ -15,22 +16,58 @@ class CommandInfoTest extends TestCase
     /** @test */
     public function it_checks_if_empty_command_is_not_a_make_model_command()
     {
-        $commandInfo = $this->simulateCommand('');
+        $commandInfo = new CommandInfo;
         $this->assertFalse($commandInfo->isMakeCommand());
     }
 
     /** @test */
     public function it_checks_if_command_is_make_model_command()
     {
-        $commandInfo = $this->simulateCommand('make:model');
-        $this->assertTrue($commandInfo->isMakeCommand());
+        $commandInfo = new CommandInfo('make:model');
+        $this->assertTrue($commandInfo->isMakeModelCommand());
+    }
+
+    /** @test */
+    public function it_checks_if_command_is_make_test_command()
+    {
+        $commandInfo = new CommandInfo('make:test');
+        $this->assertTrue($commandInfo->isTestCommand());
+    }
+
+    /** @test */
+    public function it_checks_if_command_is_make_factory_command()
+    {
+        $commandInfo = new CommandInfo('make:factory');
+        $this->assertTrue($commandInfo->isFactoryCommand());
+    }
+
+    /** @test */
+    public function it_checks_if_command_is_make_command_command()
+    {
+        $commandInfo = new CommandInfo('make:command');
+        $this->assertTrue($commandInfo->isCommandCommand());
+    }
+
+    /** @test */
+    public function it_returns_what_is_set_for_input()
+    {
+        $testArgs = new ArgvInput(['IgnoredAppName', 'make:command', 'NameOfGeneratedFile', 'firstOption']);
+        $commandInfo = new CommandInfo('make:command', null, $testArgs);
+        $this->assertEquals('firstOption', $commandInfo->getInput()->getOptions()[2]);
+    }
+
+    /** @test */
+    public function it_checks_if_command_is_migration_command_command()
+    {
+        $commandInfo = new CommandInfo('make:migration');
+        $this->assertTrue($commandInfo->isMigrationCommand());
     }
 
     /** @test */
     public function it_checks_if_command_is_artisan_list_command()
     {
         // If you just run `php artisan`
-        $commandInfo = $this->simulateCommand();
+        $commandInfo = new CommandInfo;
         $this->assertTrue($commandInfo->isListCommand());
     }
 
@@ -38,22 +75,102 @@ class CommandInfoTest extends TestCase
     public function it_checks_if_command_is_artisan_list_command_specifically()
     {
         // If you run `php artisan list`
-        $commandInfo = $this->simulateCommand('list');
+        $commandInfo = new CommandInfo('list');
         $this->assertTrue($commandInfo->isListCommand());
     }
 
     /** @test */
     public function it_returns_the_command_string()
     {
-        $commandInfo = $this->simulateCommand('make:controller', 'Something');
+        $commandInfo = new CommandInfo('make:controller', 'Something');
         $this->assertEquals('make:controller', $commandInfo->getCommandString());
     }
 
     /** @test */
     public function it_returns_the_arg_name()
     {
-        $commandInfo = $this->simulateCommand('make:controller', 'Something');
+        $commandInfo = new CommandInfo('make:controller', 'Something');
         $this->assertEquals('Something', $commandInfo->getArgName());
+    }
+
+    /** @test */
+    public function it_says_list_command_is_not_openable()
+    {
+        $commandInfo = new CommandInfo;
+        $this->assertFalse($commandInfo->isOpenable());
+    }
+
+    /** @test */
+    public function it_says_help_executions_are_not_openable()
+    {
+        $commandInfo = new CommandInfo('make:model', null, null, null, true);
+        $this->assertFalse($commandInfo->isOpenable());
+    }
+
+    /** @test */
+    public function it_says_commands_without_a_name_are_not_openable()
+    {
+        $commandInfo = new CommandInfo('make:model');
+        $this->assertFalse($commandInfo->isOpenable());
+    }
+
+    /** @test */
+    public function it_creates_a_filename_based_on_name_argument()
+    {
+        $commandInfo = new CommandInfo('make:model', 'SomeName');
+        $this->assertEquals('SomeName.php', $commandInfo->getFilename());
+    }
+
+    /** @test */
+    public function it_creates_a_filename_based_on_name_argument_with_namespace()
+    {
+        $commandInfo = new CommandInfo('make:model', 'App\\Models\\SomeName');
+        $this->assertEquals('App/Models/SomeName.php', $commandInfo->getFilename());
+    }
+
+    /** @test */
+    public function it_returns_splfile_from_filename()
+    {
+        $commandInfo = new CommandInfo('make:model', 'SomeName');
+        $this->assertInstanceOf(SplFileInfo::class, $commandInfo->getSplFile());
+    }
+
+    /** @test */
+    public function it_a_does_not_create_a_filename_if_no_name_provided()
+    {
+        $commandInfo = new CommandInfo('make:model');
+        $this->assertNull($commandInfo->getFilename());
+    }
+
+    /** @test */
+    public function it_gets_the_command_class()
+    {
+        $commandInfo = new CommandInfo('make:model');
+        $this->assertEquals('Illuminate\Foundation\Console\ModelMakeCommand', $commandInfo->getCommandClass());
+    }
+
+    /** @test */
+    public function it_returns_null_for_command_class_when_unknown_make_command_executed()
+    {
+        $commandInfo = new CommandInfo('make:thisIsNotAValidModel');
+        $this->assertNull($commandInfo->getCommandClass());
+    }
+
+    /** @test */
+    public function it_alerts_user_that_adding_php_to_their_name_arguments_is_bad()
+    {
+        $spy = Mockery::spy(OutputInterface::class);
+        $commandInfo = new CommandInfo('make:model', 'SomeModel.php', null, $spy);
+        $spy->shouldHaveReceived('writeln')->times(3);
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function it_says_nothing_is_openable_if_production()
+    {
+        Config::set('app.env', 'production');
+        $commandInfo = new CommandInfo('make:model');
+        $this->assertFalse($commandInfo->isOpenable());
     }
 
     public function setUp() : void
@@ -61,42 +178,8 @@ class CommandInfoTest extends TestCase
         parent::setUp();
     }
 
-    private function mockInput($name)
-    {
-        $argName = $name == '' ? [] : ['name' => $name];
-        $inputMock = Mockery::mock(InputInterface::class);
-        $inputMock->shouldReceive('getArguments')->once()->andReturn($argName);
-        $inputMock->shouldReceive('getArgument')->with('name')->once()->andReturn($name);
-        $name == '' ? $inputMock->shouldReceive('getOption')->with('help')->times(0) : $inputMock->shouldReceive('getOption')->with('help')->once()->andReturn(false);
-        return $inputMock;
-    }
-
-    /**
-     * Not used for anything other than depency resolution
-     *
-     * @return void
-     */
-    private function mockOutput()
-    {
-        return Mockery::mock(OutputInterface::class);
-    }
-
     protected function tearDown() : void
     {
         Mockery::close();
-    }
-
-    private function simulateCommand($commandString = null, $name = '', $options = [])
-    {
-        $inputMock = $this->mockInput($name);
-        $outputMock = $this->mockOutput();
-        return new CommandInfo(
-            new CommandFinished(
-                $commandString,
-                $inputMock,
-                $outputMock,
-                0
-            )
-        );
     }
 }
