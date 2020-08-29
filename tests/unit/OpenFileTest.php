@@ -20,7 +20,7 @@ class OpenFileTest extends TestCase
     /** @test */
     public function it_opens_files()
     {
-        $this->assertTrue($this->open->open('test'));
+        $this->assertTrue(OpenFile::open('test'));
     }
 
     protected function getPackageProviders($app)
