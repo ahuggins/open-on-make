@@ -2,39 +2,49 @@
 
 namespace OpenOnMake\Listeners;
 
+
 use OpenOnMake\OpenFile;
 use OpenOnMake\CommandInfo;
+use OpenOnMake\PathGetters\FilePath;
+use OpenOnMake\File;
 
 class OpenOnMake
 {
-    private $commandInfo;
+
+    private $filePath;
+    private $file;
+
+    public function __construct(File $file, FilePath $filePath) {
+        $this->filePath = $filePath;
+        $this->file = $file;
+    }
 
     public function handle($event)
     {
-        $this->commandInfo = new CommandInfo(
+        $commandInfo = new CommandInfo(
             $event->command,
             $event->input->hasArgument('name') ? $event->input->getArgument('name') : null,
             $event->input,
             $event->output,
             $event->input->getOption('help')
         );
-        if ($this->commandInfo->isOpenable()) {
-            $path = $this->filePath->determine($this->commandInfo);
-            
+        if ($commandInfo->isOpenable()) {
+            $path = $this->filePath->determine($commandInfo);
+
             OpenFile::open($path);
-            
-            $this->checkForFlags();
+
+            $this->checkForFlags($commandInfo);
         }
     }
 
-    public function checkForFlags()
+    public function checkForFlags($commandInfo)
     {
-        if (! $this->commandInfo->isMakeModelCommand()) {
+        if (! $commandInfo->isMakeModelCommand()) {
             return null;
         }
 
-        $input = $this->commandInfo->getInput();
-        
+        $input = $commandInfo->getInput();
+
         if ($input->hasOptions()) {
             $name = $input->getClassNameOfNameArgument();
             foreach ($input->getOptions() as $option) {
