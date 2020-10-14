@@ -9,12 +9,12 @@
         }
     ],
     "require": {
-        "php" : "~7.3",
+        "php" : "~7.4",
         "imliam/laravel-env-set-command": "^1.1",
         "symfony/finder": "^5.1",
         "laravel/helpers": "^1.2",
-        "illuminate/support": "^7.19",
-        "illuminate/console": "^7.19"
+        "illuminate/support": "^7.19|^8.80",
+        "illuminate/console": "^7.19|^8.80"
     },
     "autoload": {
         "psr-4": {
