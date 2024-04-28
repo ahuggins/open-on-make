@@ -9,7 +9,7 @@
         }
     ],
     "require": {
-        "php" : "~7.4",
+        "php" : "~7.4|^8.0",
         "imliam/laravel-env-set-command": "^1.1",
         "symfony/finder": "^5.1",
         "laravel/helpers": "^1.2",
