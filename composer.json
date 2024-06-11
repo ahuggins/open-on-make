@@ -9,12 +9,11 @@
         }
     ],
     "require": {
-        "php" : "~7.4",
-        "imliam/laravel-env-set-command": "^1.1",
-        "symfony/finder": "^5.1",
+        "php": ">=8.0",
+        "symfony/finder": "^7.1",
         "laravel/helpers": "^1.2",
-        "illuminate/support": "^7.19|^8.0",
-        "illuminate/console": "^7.19|^8.0"
+        "illuminate/support": ">=11.0",
+        "illuminate/console": ">=11.0"
     },
     "autoload": {
         "psr-4": {
@@ -34,7 +33,7 @@
         }
     },
     "require-dev": {
-        "phpunit/phpunit": "^8.4",
-        "orchestra/testbench": "^5.4"
+        "phpunit/phpunit": "^10.0",
+        "orchestra/testbench": "^9.1"
     }
 }
