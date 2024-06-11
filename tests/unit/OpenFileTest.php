@@ -8,16 +8,19 @@ use OpenOnMake\File;
 use OpenOnMake\Check;
 use OpenOnMake\OpenFile;
 use Orchestra\Testbench\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class OpenFileTest extends TestCase
 {
-    public function setUp() : void
+    public $open;
+
+    public function setUp(): void
     {
         $this->open = new OpenFile;
         parent::setUp();
     }
 
-    /** @test */
+    #[Test]
     public function it_opens_files()
     {
         $this->assertTrue(OpenFile::open('test'));
