@@ -4,10 +4,11 @@ namespace Tests;
 
 use OpenOnMake\Files\MigrationFile;
 use Orchestra\Testbench\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class MigrationFileTest extends TestCase
 {
-    /** @test */
+    #[Test]
     public function it_returns_latest_migration_path()
     {
         $path = MigrationFile::getLatestMigrationFile();

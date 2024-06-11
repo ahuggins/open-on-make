@@ -8,31 +8,35 @@ use OpenOnMake\Options;
 use OpenOnMake\OpenFile;
 use Orchestra\Testbench\TestCase;
 use Symfony\Component\Finder\Finder;
+use PHPUnit\Framework\Attributes\Test;
 
 class FileTest extends TestCase
 {
-    public function setUp() : void
+    public $open;
+    public $file;
+
+    public function setUp(): void
     {
         $this->open = Mockery::mock(OpenFile::class);
         $this->file = new File($this->open, new Options, new Finder);
         parent::setUp();
     }
 
-    /** @test */
+    #[Test]
     public function it_adds_php_extension_to_name_of_thing_being_generated()
     {
         $filename = $this->file->getFileName('NameToGenerate');
         $this->assertEquals('NameToGenerate.php', $filename);
     }
 
-    /** @test */
+    #[Test]
     public function it_adds_php_extension_to_name_of_thing_being_generated_and_replaces_two_backslashes_with_forward_slash()
     {
         $filename = $this->file->getFileName('Models\\NameToGenerate');
         $this->assertEquals('Models/NameToGenerate.php', $filename);
     }
 
-    /** @test */
+    #[Test]
     public function it_calls_open_when_opening_additional_files()
     {
         $this->open->expects('open')->once();
@@ -40,14 +44,14 @@ class FileTest extends TestCase
         $this->file->openAdditionalFile('', 'SomeName', '-c');
     }
 
-    /** @test */
+    #[Test]
     public function it_opens_additional_files_generated_in_addition_to_model()
     {
         $this->open->expects('open')->once();
         $this->file->openFilesGeneratedInAdditionToModel('-r', 'SomeModelName');
     }
 
-    /** @test */
+    #[Test]
     public function it_delegates_open_to_open_file_class()
     {
         $this->open->expects('open')->once();

@@ -4,16 +4,17 @@ namespace Tests;
 
 use OpenOnMake\Options;
 use Orchestra\Testbench\TestCase;
+use PHPUnit\Framework\Attributes\Test;
 
 class OptionsTest extends TestCase
 {
     private $options;
 
-    public function setUp() : void
+    public function setUp(): void
     {
         $this->options = new Options;
     }
-    /** @test */
+    #[Test]
     public function it_returns_the_command_type_from_option()
     {
         foreach ($this->options->getOptions() as $flag => $type) {
@@ -21,7 +22,7 @@ class OptionsTest extends TestCase
         }
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_command_is_resource()
     {
         $this->assertTrue($this->options->isResource('-r'));
@@ -29,7 +30,7 @@ class OptionsTest extends TestCase
         $this->assertTrue($this->options->isResource('resource'));
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_command_is_migration()
     {
         $this->assertTrue($this->options->isMigration('-m'));
@@ -37,20 +38,20 @@ class OptionsTest extends TestCase
         $this->assertTrue($this->options->isMigration('migration'));
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_command_is_all()
     {
         $this->assertTrue($this->options->isAll('-a'));
         $this->assertTrue($this->options->isAll('--all'));
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_the_passed_option_exists()
     {
         $this->assertTrue($this->options->exist('-c'));
     }
 
-    /** @test */
+    #[Test]
     public function it_checks_if_the_passed_option_does_not_exists()
     {
         $this->assertFalse($this->options->exist('--notExistingOption'));
