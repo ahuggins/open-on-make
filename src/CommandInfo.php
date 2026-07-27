@@ -81,7 +81,17 @@ class CommandInfo
 
     public function isMakeCommand() : bool
     {
-        return is_string($this->getCommandString()) && str_contains($this->getCommandString(), 'make:');
+        if (! is_string($this->getCommandString())) {
+            return false;
+        }
+
+        foreach (config('open-on-make.prefixes', ['make:', 'saloon:']) as $prefix) {
+            if (str_contains($this->getCommandString(), $prefix)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function isMigrationCommand()
